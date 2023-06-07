@@ -17,17 +17,5 @@ export default function Header() {
       <Link className="btn btn-outline-info me-md-2" to="/signup">Signup</Link>
     </nav>
   </div>
-    // <div className="navs">
-    //   <div className="rightOnNav">
-    //     <h1>ZEFEN ዘፈን</h1>
-    //   </div>
-    //   <div className="links">
-    //     <NavLink to="/">Home</NavLink>
-    //     <NavLink to="/categories">Music Genres</NavLink>
-    //     <NavLink to="/searchArtist">Search</NavLink>
-    //     <NavLink to="/instruments">Instruments</NavLink>
-    //     <NavLink to="/about">About</NavLink>
-    //   </div>
-    // </div>
   );
 }
