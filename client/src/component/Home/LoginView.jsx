@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from "react";
 import axios from "../../util/axiosInstance.js";
-import { useNavigate } from 'react-router-dom'; // import useNavigate
-import './LoginView.css'
+import { useNavigate } from "react-router-dom"; // import useNavigate
+import UserContext from "../../UserContext"; // import UserContext
+import "./LoginView.css";
 
 export default function LoginView() {
+  const { setUser } = useContext(UserContext); // get the setUser function from context
+
   const navigate = useNavigate(); // create a navigate function
-  const [errorMessage, setErrorMessage] = useState(''); // add a piece of state for the error message
+  const [errorMessage, setErrorMessage] = useState(""); // add a piece of state for the error message
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -17,36 +20,39 @@ export default function LoginView() {
       password: formData.get("password"),
     };
 
-    try {  
-      const res = await axios.post("/api/users/signin", data );
-      console.log(res.data)
+    try {
+      const res = await axios.post("/api/users/signin", data);
+      console.log(res.data);
 
       // if login is successful, redirect to home page
-        if (res.data) {
-          navigate('/home');
-        }
+      if (res.data) {
+        setUser(res.data); // update the user's data
+        navigate("/home");
+      }
     } catch (error) {
       console.error("There was an error", error);
-      setErrorMessage('Login failed. Please check your username and password.'); // set the error message when login fails
+      setErrorMessage("Login failed. Please check your username and password."); // set the error message when login fails
     }
   };
 
-  return <>
-  <div className="login-form">
-  <h1>Login</h1>
-  <form onSubmit={handleSubmit}>
-    <label>
-      Username
-      <input name="userName" type="text" required={true} />
-    </label>
-    <label>
-      Password
-      <input name="password" type="password" required={true} />
-    </label>
-    <button>Login</button>
-  </form>
-    {errorMessage && <p className="error-message">{errorMessage}</p>} {/* display the error message if it exists */}
-  </div>
-
-  </>;
+  return (
+    <>
+      <div className="login-form">
+        <h1>Login</h1>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Username
+            <input name="userName" type="text" required={true} />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" required={true} />
+          </label>
+          <button>Login</button>
+        </form>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}{" "}
+        {/* display the error message if it exists */}
+      </div>
+    </>
+  );
 }
