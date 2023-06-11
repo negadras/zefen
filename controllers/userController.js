@@ -37,45 +37,45 @@ export const logInUser = async (req, res) => {
         .json({ message: "User not authorized." });
     }
     // if there is user let's check if the password is matching with the password provided by that user?
-    const checkPassword = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
+    const checkPassword = await bcrypt.compare( req.body.password, user.password);
+
     if (!checkPassword) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "User not authorized." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not authorized." });
     }
 
     ///generate our token
     const token = generateToken(user);
 
     return res
-      .status(StatusCodes.OK)
-      .cookie("jwt", token, {
-        //ESSENTIAL cookie --> keep track of who is signed in. (storing token)
-        httpOnly: true, //no scripting languages can access this cookie
-        secure: false, //cookie can only be sent over https SSL/TLS, --> encrypted connection with server
-        sameSite: "lax", //not allowing cookie over cross-site request (when loading images)
-      })
-      .json({
-        message: "login successfull",
-        // we are sending the user as an object with only selected keys
-        user: { username: user.userName },
-      });
+         .status(200) //everything went okay 
+         .cookie("jwt", token, {  //ESSENTIAL cookie --> keep track of who is signed in. (storing token)
+           httpOnly: true, //no scripting languages can access this cookie
+           secure: false, //cookie can only be sent over https SSL/TLS, --> encrypted connection with server
+           sameSite: "Lax", //not allowing cookie over cross-site request (when loading images)
+         }).json({
+           message: "Login successful",
+           // we are sending the user as an object with only selected keys
+           user: { username: user.userName }, // later I might want to send more keys here
+         });
+
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: error.toString() });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.toString() });
   }
 };
 
+/**
+ * Logout the user by clearing the cookie 
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const logoutUser = (req, res) => {
-  res
-    .clearCookie("jwt", {
+  console.log("Logout User");
+  res.clearCookie("jwt", {
       httpOnly: true,
-      sameSite: "lax",
       secure: false,
-    })
-    .send("User is logged out");
+      sameSite: "lax",
+    }).send("User is logged out");
 };
+
+
+export default {createUser, logInUser, logoutUser}

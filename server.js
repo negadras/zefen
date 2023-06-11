@@ -1,16 +1,22 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import passport from "passport";
+import cookieParser from "cookie-parser";
+
 import zefenRoutes from "./routes/zefenRoutes.js";
 import userRoute from "./routes/userRoutes.js";
 import songRoute from "./routes/songRoutes.js";
 import ArtistRoute from "./routes/artistRoutes.js";
 import cors from "cors";
+import { configureJwtStrategy } from './passport-config.js'
 
 //loads .env file contents into process.env (environment variables)
 dotenv.config();
 
 const app = express();
+
+//allows us to access cookies on the client side
 app.use(
   cors({
     credentials: true, //Access-Control-Allow-Credentials true (we allow credentials to be sent)
@@ -19,13 +25,15 @@ app.use(
 );
 
 //middleware to parse cookies and add those cookies to req.cookies
-// app.use(cookieParser());
+app.use(cookieParser());
 
-// configureJwtStrategy(passport);
+configureJwtStrategy(passport);
 
 //allows us to parse json information from http body to req.body
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); //parses urlencoded data 
 
+// Connect to MongoDB
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${process.env.DB_NAME}`

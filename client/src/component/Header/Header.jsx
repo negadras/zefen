@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../../UserContext';
-import axios from 'axios'; // Add this import statement
+import axios from "../../util/axiosInstance";
 
 export default function Header() {
   const { user, setUser } = useContext(UserContext);
@@ -9,7 +9,7 @@ export default function Header() {
   const handleSignOut = async () => {
     try {
       // make a request to your server to end the user's session
-      await axios.post('/api/users/signout');
+      await axios.get('/api/users/signout');
 
       // clear the user's data from the context
       setUser(null);
