@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // import useState from 'react'
+import React, { useState, useEffect } from 'react'; // import useState from 'react'
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import About from "./component/About/About";
@@ -11,12 +11,31 @@ import Instruments from "./component/Instruments/Instruments";
 import Search from "./component/Search/Search";
 import LoginView from './component/Home/LoginView'
 import SignupForm from "./component/SignUp/SignupForm";
+import Profile from "./component/Profile/Profile";
+
 
 import UserContext from './UserContext'; // import UserContext
 
 function App() {
 
   const [user, setUser] = useState(null); // add a piece of state for the user's data
+
+  // When the app is first loaded, check if there's user data in local storage
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  // When the user data changes, store it in local storage
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}> {/* provide the user's data and the setUser function as the value of the context */}
@@ -33,6 +52,7 @@ function App() {
           <Route path="/details/:genrename" element={<Details />} />
           <Route path="/signin" element={<LoginView />} />
           <Route path="/signup" element={<SignupForm />} />
+          <Route path="/profile" element={<Profile />} /> 
           <Route path="*" element={<div> 404 page not found </div>} />
         </Routes>
         <Footer />

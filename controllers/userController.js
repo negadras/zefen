@@ -28,7 +28,9 @@ export const createUser = async (req, res) => {
 
 export const logInUser = async (req, res) => {
   try {
-    const user = await User.findOne({ userName: req.body.userName });
+    const user = await User.findOne({ userName: req.body.userName })
+                           .populate('favoriteSongs')
+                           .populate('favoriteArtists');
 
     //does this user name exist?
     if (!user) {
@@ -55,7 +57,12 @@ export const logInUser = async (req, res) => {
          }).json({
            message: "Login successful",
            // we are sending the user as an object with only selected keys
-           user: { username: user.userName }, // later I might want to send more keys here
+           user: { 
+            userId: user._id,
+            username: user.userName,
+            favoriteSongs: user.favoriteSongs,
+            favoriteArtists: user.favoriteArtists 
+                 }, // later I might want to send more keys here
          });
 
   } catch (error) {
@@ -76,6 +83,36 @@ export const logoutUser = (req, res) => {
       sameSite: "lax",
     }).send("User is logged out");
 };
+
+
+// In userController.js
+
+export const addFavoriteSong = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.userId,
+      { $addToSet: { favoriteSongs: req.params.songId } },
+      { new: true }
+    ).populate('favoriteSongs').populate('favoriteArtists');
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const addFavoriteArtist = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.userId,
+      { $addToSet: { favoriteArtists: req.params.artistId } },
+      { new: true }
+    ).populate('favoriteSongs').populate('favoriteArtists');
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 
 export default {createUser, logInUser, logoutUser}

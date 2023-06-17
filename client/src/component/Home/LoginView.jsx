@@ -27,7 +27,7 @@ export default function LoginView() {
       // if login is successful, redirect to home page
       if (res.data) {
         setUser(res.data); // update the user's data
-        navigate("/home");
+        navigate("/profile");
       }
     } catch (error) {
       console.error("There was an error", error);

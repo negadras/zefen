@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import Song from "../models/Song.js";
+import User from "../models/User.js";
 
 export const listSongs = async (req, res) => {
   try {

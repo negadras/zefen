@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, logInUser, logoutUser } from "../controllers/userController.js";
+import { createUser, logInUser, logoutUser, addFavoriteSong, addFavoriteArtist } from "../controllers/userController.js";
 import passport from "passport";
 
 const router = express.Router();
@@ -12,5 +12,12 @@ router.post("/signin", logInUser);
 
 //get http://localhost:4000/api/users/signout
 router.get("/signout", logoutUser);
+
+
+router.post('/:userId/favorites/songs/:songId', passport.authenticate('jwt', { session: false }), addFavoriteSong);
+router.post('/:userId/favorites/artists/:artistId', passport.authenticate('jwt', { session: false }), addFavoriteArtist);
+
+// Add routes for removeFavoriteSong, addFavoriteArtist, removeFavoriteArtist
+
 
 export default router;
